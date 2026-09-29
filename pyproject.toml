@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "faceless-video-generator"
+version = "1.13.1"
+description = "Creator-grade faceless video studio with story-level AI directing, cinematic video generation, continuity, captions, TTS, music ducking, QA, and resumable renders."
+requires-python = ">=3.10"
+dependencies = [
+  "edge-tts>=7.0.0",
+  "imageio-ffmpeg>=0.5.1",
+  "Pillow>=10.1.0",
+]
+
+[project.optional-dependencies]
+script = [
+  "openai>=1.0.0",
+]
+youtube = [
+  "google-api-python-client>=2.150.0",
+  "google-auth-oauthlib>=1.2.1",
+  "google-auth-httplib2>=0.2.0",
+]
+video = [
+  "runwayml",
+]
+
+[project.scripts]
+faceless-video = "faceless_video_generator.cli:main"
+faceless-script = "faceless_video_generator.script_writer:main"
+faceless-create = "faceless_video_generator.create:main"
+faceless-trends = "faceless_video_generator.trends:main"
+faceless-publish = "faceless_video_generator.youtube_upload:main"
+faceless-ui = "faceless_video_generator.webui:main"
+faceless-motion = "faceless_video_generator.motion.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["faceless_video_generator*"]
+
+[tool.setuptools.package-data]
+faceless_video_generator = ["fonts/*", "web/*", "web/js/*"]

@@ -1,0 +1,87 @@
+{
+  "style": {
+    "accent": "#E8630A",
+    "uppercase": true
+  },
+  "scenes": [
+    {
+      "type": "hook",
+      "theme": "light",
+      "duration": 3.6,
+      "tag": "HABIT SCIENCE",
+      "narration": "Your habits aren't about willpower.",
+      "lines": [
+        "YOUR HABITS",
+        "AREN'T ABOUT"
+      ],
+      "accent": "WILLPOWER."
+    },
+    {
+      "type": "kinetic",
+      "theme": "dark",
+      "duration": 2.6,
+      "tag": "",
+      "narration": "They're loops.",
+      "small": "THEY'RE",
+      "big": "LOOPS.",
+      "spinner": true
+    },
+    {
+      "type": "steps",
+      "theme": "light",
+      "duration": 6.0,
+      "tag": "THE HABIT LOOP",
+      "narration": "A cue triggers a routine, and the routine earns a reward.",
+      "nodes": [
+        {
+          "label": "CUE",
+          "sub": "TRIGGER",
+          "icon": "spark",
+          "title": "STEP 1: THE TRIGGER"
+        },
+        {
+          "label": "ROUTINE",
+          "sub": "BEHAVIOR",
+          "icon": "cycle",
+          "title": "STEP 2: THE ACTION"
+        },
+        {
+          "label": "REWARD",
+          "sub": "DOPAMINE HIT",
+          "icon": "star",
+          "title": "STEP 3: THE PAYOFF"
+        }
+      ],
+      "loop": true
+    },
+    {
+      "type": "chart",
+      "theme": "dark",
+      "duration": 4.4,
+      "tag": "MATHEMATICAL PROOF",
+      "narration": "One percent better every day compounds to thirty-seven times in a year.",
+      "title": "1% BETTER EVERY DAY COMPOUNDS TO 37X IN A YEAR.",
+      "curve": "exp",
+      "show_curve": true,
+      "x_labels": [
+        "DAY 1",
+        "DAY 180",
+        "DAY 365"
+      ],
+      "value": "37x",
+      "caption": "BETTER AFTER 365 DAYS"
+    },
+    {
+      "type": "outro",
+      "theme": "accent",
+      "duration": 3.4,
+      "tag": "THE FORMULA",
+      "narration": "Build the loop. Change the habit.",
+      "lines": [
+        "BUILD THE LOOP.",
+        "CHANGE THE HABIT."
+      ],
+      "spinner": true
+    }
+  ]
+}

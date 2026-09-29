@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Faceless Video Maker</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/styles.css">
+<script type="module" src="/js/main.js"></script>
+</head>
+<body>
+<header>
+  <h1>Faceless Video Maker</h1>
+  <p class="sub">Runs on your computer. Keep the terminal window open while a video renders. Your script and choices are remembered in this browser.</p>
+</header>
+<div id="banner" class="banner" role="alert" hidden></div>
+<noscript><p class="banner">This page needs JavaScript.</p></noscript>
+
+<main>
+<fieldset id="script-section">
+  <legend>1. Script</legend>
+  <div class="row">
+    <div><label for="topic">Topic (to have a script written for you)</label>
+      <input type="text" id="topic" placeholder="The science of building better habits"></div>
+    <div class="narrow"><label for="secs">Length (seconds)</label>
+      <input type="number" id="secs" value="60" min="10" step="10"></div>
+    <button id="write" type="button" class="alt">Write script</button>
+  </div>
+  <div class="row">
+    <div><label for="link">Or load your script from a link (web page, text file, or shared Google Doc)</label>
+      <input type="url" id="link" placeholder="https://..."></div>
+    <button id="load" type="button" class="alt">Load link</button>
+    <div class="auto"><label for="file">Or upload a .txt file</label>
+      <input type="file" id="file" accept=".txt,.md,text/plain"></div>
+  </div>
+  <label for="script">Script (edit freely: this exact text is spoken. Drop a .txt file here, or press Ctrl+Enter to create.)</label>
+  <textarea id="script" placeholder="Paste or write your narration here..."></textarea>
+  <div class="msg" id="smsg" role="status" aria-live="polite"></div>
+  <div class="msg" id="count"></div>
+</fieldset>
+
+<fieldset id="options">
+  <legend>2. Options</legend>
+  <div class="row">
+    <div class="wide"><label for="style">Video style</label>
+      <select id="style">
+        <option value="photo">Photo video: AI pictures with slow zoom/pan behind the text</option>
+        <option value="motion">Chart &amp; diagram video: animated charts, loop diagrams and big text</option>
+      </select></div>
+  </div>
+  <div class="hint" id="hint"></div>
+  <div class="msg warn" id="imgwarn" hidden>No image key found. AI pictures now need a free Pollinations key (get one at enter.pollinations.ai, then add POLLINATIONS_API_KEY=... to the .env file and restart). Without it the pictures will most likely fail and you get plain backgrounds. Untick "AI images", or pick the Chart &amp; diagram style, which needs no images.</div>
+  <div class="row">
+    <div><label for="orient">Format</label>
+      <select id="orient">
+        <option value="portrait">Vertical (Shorts, 9:16)</option>
+        <option value="landscape">Horizontal (YouTube, 16:9)</option>
+      </select></div>
+    <div><label for="quality">Speed / quality</label>
+      <select id="quality">
+        <option value="fast">Fast draft (720p, no zoom)</option>
+        <option value="balanced" selected>Balanced</option>
+        <option value="best">Best quality (slowest)</option>
+      </select></div>
+    <div><label for="voice">Voice</label><select id="voice"></select></div>
+  </div>
+  <div class="row photo">
+    <div class="wide"><label for="video_mode">AI video creation</label>
+      <select id="video_mode">
+        <option value="local" selected>Local cinematic motion — free</option>
+        <option value="cinematic">Creator Pro — Claude Director + Runway Gen-4.5</option>
+      </select></div>
+    <div class="hintbox">Creator Pro uses a story-level AI director for continuity, shot grammar, camera intent and pacing, then renders real motion with Runway Gen-4.5. If no scene image exists, Runway can use text-to-video instead.</div>
+  </div>
+  <div class="msg warn photo" id="directorwarn" hidden>Claude is not configured. Auto mode will use the available fallback director. Set ANTHROPIC_API_KEY in .env and restart the app to use Claude.</div>
+  <div class="row photo" id="director_controls">
+    <div><label for="director">Director brain</label>
+      <select id="director">
+        <option value="auto" selected>Auto — Claude when available</option>
+        <option value="anthropic">Claude Sonnet 4.6</option>
+        <option value="pollinations">Fallback text model</option>
+        <option value="none">Deterministic shots only</option>
+      </select></div>
+    <div><label for="director_model">Claude model</label>
+      <select id="director_model">
+        <option value="claude-sonnet-4-6" selected>Claude Sonnet 4.6</option>
+        <option value="claude-opus-4-8">Claude Opus 4.8</option>
+      </select></div>
+  </div>
+  <div class="row motion">
+    <div class="wide"><label for="planmode">Scene planning</label>
+      <select id="planmode">
+        <option value="smart">Smart: an AI reads the script and picks each visual (needs internet)</option>
+        <option value="offline">Quick: offline rules, no internet</option>
+      </select></div>
+    <div class="narrow"><label for="accent">Highlight colour</label><input type="color" id="accent" value="#e8630a"></div>
+    <div><label for="tag">Label on the scenes</label><input type="text" id="tag" value="KEY IDEA" maxlength="40"></div>
+  </div>
+  <div class="toggles">
+    <label class="chk photo"><input type="checkbox" id="ai" checked> AI images</label>
+    <label class="chk photo"><input type="checkbox" id="motion" checked> Zoom/pan motion</label>
+    <label class="chk motion"><input type="checkbox" id="narrate" checked> Speak the narration</label>
+    <label class="chk"><input type="checkbox" id="music" checked> Background music</label>
+    <label class="chk"><input type="checkbox" id="caps" checked> ALL CAPS text</label>
+    <label class="chk"><input type="checkbox" id="resume"> Continue the previous run</label>
+  </div>
+</fieldset>
+
+<fieldset id="scenes" class="motion">
+  <legend>3. Scenes (charts &amp; diagrams)</legend>
+  <p class="hint first">Optional. Plan the scenes to preview and edit them before rendering. If you skip this, they are planned from your script automatically when you click Create.</p>
+  <div class="row center">
+    <button id="plan_btn" type="button">Plan scenes from script</button>
+    <button id="demo" type="button" class="alt">Load example</button>
+    <button id="reprev" type="button" class="alt">Update preview</button>
+    <button id="saveplan" type="button" class="alt">Save plan</button>
+    <button id="clear" type="button" class="alt">Clear</button>
+    <div class="auto"><label for="planfile" class="tight">Load plan (.json)</label>
+      <input type="file" id="planfile" accept=".json,application/json"></div>
+  </div>
+  <div class="msg" id="pmsg" role="status" aria-live="polite"></div>
+  <div class="msg warn" id="stale" hidden>The script or label changed since the scenes were planned. Click "Plan scenes from script" again, or Clear to have them planned automatically.</div>
+  <div class="grid" id="grid"></div>
+  <details>
+    <summary>Edit the scene plan (advanced, JSON)</summary>
+    <textarea id="spec" spellcheck="false" aria-describedby="specerr" placeholder="Scene plan appears here after planning. You can edit it, then click Update preview."></textarea>
+    <div class="msg" id="specerr" aria-live="polite"></div>
+  </details>
+</fieldset>
+
+<fieldset id="create">
+  <legend id="lg3">3. Create</legend>
+  <div class="row center">
+    <button id="go" type="button">Create video</button>
+    <button id="stop" type="button" class="alt" disabled>Cancel</button>
+    <div class="msg grow" id="state" role="status" aria-live="polite">Ready.</div>
+  </div>
+  <div id="bar" role="progressbar" aria-label="Video progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="fill"></div></div>
+  <details id="logbox">
+    <summary>Log</summary>
+    <div class="row center right"><button id="copylog" type="button" class="alt small">Copy log</button></div>
+    <pre id="log" tabindex="0"></pre>
+  </details>
+  <div id="result" hidden>
+    <video id="vid" controls playsinline></video>
+    <p><a id="dl" class="btn" href="/output.mp4" download="video.mp4">Download video</a></p>
+  </div>
+</fieldset>
+</main>
+
+<dialog id="lightbox" aria-label="Scene preview">
+  <button id="lightclose" type="button" class="alt small close" aria-label="Close preview">Close</button>
+  <img id="lightimg" alt="">
+  <p id="lightcap"></p>
+</dialog>
+</body>
+</html>

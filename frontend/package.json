@@ -1,0 +1,15 @@
+{
+  "name": "faceless-video-maker-ui",
+  "private": true,
+  "version": "1.13.1",
+  "description": "TypeScript source of the local web page. Compiled output goes to ../faceless_video_generator/web/js.",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p .",
+    "watch": "tsc -p . --watch --preserveWatchOutput",
+    "typecheck": "tsc -p . --noEmit"
+  },
+  "devDependencies": {
+    "typescript": ">=5.6.0"
+  }
+}
